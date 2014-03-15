@@ -10,7 +10,7 @@ from copy import deepcopy
 moves = [Board.UP, Board.DOWN, Board.LEFT, Board.RIGHT]
 
 
-def treeSearch(b, score, depth=10):
+def treeSearch(b, score, depth=1):
     #return the score if we've won or if there is only one cell of each value left
     if b.won() or not b.canCollapse() or depth == 0:
         return score
@@ -24,12 +24,11 @@ def treeSearch(b, score, depth=10):
         #copy the board
         boardCopy = deepcopy(b)
         moveScore = score + boardCopy.move(m, add_tile=False)
-        if not boardCopy == b:
-            #do our move - don't add a tile, so its not stochastic
-            moveScore = treeSearch(boardCopy, moveScore, depth=depth - 1)
-        print "After move %d:%d\n%s" % (m, moveScore, boardCopy)
-        if moveScore > bestScore:
-            bestScore = moveScore
+        #do our move - don't add a tile, so its not stochastic
+        moveScore = treeSearch(boardCopy, moveScore, depth - 1)
+        moveScore = moveScore * len(boardCopy.getEmptyCells()) / depth
+        #print "After move %d:%d\n%s" % (m, moveScore, boardCopy)
+        bestScore = max(bestScore, moveScore)
     return bestScore
 
 
@@ -40,10 +39,12 @@ def chooseMove(g):
         boardCopy = deepcopy(g.board)
         score = treeSearch(boardCopy,
                            g.score + boardCopy.move(m, add_tile=False))
+        #print "move %d: score %d\n%s" % (m, score, boardCopy)
+        if boardCopy == g.board:
+            continue
         if score > bestScore:
             bestMove = m
             bestScore = score
-        print "Done with %d, " % m,
     print "Chose move %d" % bestMove
     return bestMove
 
