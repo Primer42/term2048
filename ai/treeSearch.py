@@ -5,15 +5,14 @@ Created on Mar 15, 2014
 '''
 from term2048.board import Board
 from term2048.game import Game
-import sys
 from copy import deepcopy
 
 moves = [Board.UP, Board.DOWN, Board.LEFT, Board.RIGHT]
 
 
-def treeSearch(b, score):
-    #return the score if we've won or if there is only one value left
-    if b.won() or len(b.getEmptyCells()) == b.size() ** 2:
+def treeSearch(b, score, depth=10):
+    #return the score if we've won or if there is only one cell of each value left
+    if b.won() or not b.canCollapse() or depth == 0:
         return score
     #return 0 if we've lost
     if not b.canMove():
@@ -24,9 +23,11 @@ def treeSearch(b, score):
     for m in moves:
         #copy the board
         boardCopy = deepcopy(b)
-        #do our move - don't add a tile, so its not stochastic
-        moveScore = treeSearch(boardCopy,
-                            score + boardCopy.move(m, add_tile=False))
+        moveScore = score + boardCopy.move(m, add_tile=False)
+        if not boardCopy == b:
+            #do our move - don't add a tile, so its not stochastic
+            moveScore = treeSearch(boardCopy, moveScore, depth=depth - 1)
+        print "After move %d:%d\n%s" % (m, moveScore, boardCopy)
         if moveScore > bestScore:
             bestScore = moveScore
     return bestScore
@@ -42,6 +43,8 @@ def chooseMove(g):
         if score > bestScore:
             bestMove = m
             bestScore = score
+        print "Done with %d, " % m,
+    print "Chose move %d" % bestMove
     return bestMove
 
 
