@@ -59,7 +59,7 @@ class Game(object):
         Create a new game.
             scores_file: file to use for the best score (default
                          is ~/.term2048.scores)
-            colors: dictionnary with colors to use for each tile
+            colors: dictionary with colors to use for each tile
             mode: color mode. This adjust a few colors and can be 'dark' or
                   'light'. See the adjustColors functions for more info.
             other options are passed to the underlying Board object.
