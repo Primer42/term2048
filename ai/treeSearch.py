@@ -10,7 +10,7 @@ from copy import deepcopy
 moves = [Board.UP, Board.DOWN, Board.LEFT, Board.RIGHT]
 
 
-def treeSearch(b, score, depth=1):
+def treeSearch(b, score, depth=4):
     #return the score if we've won or if there is only one cell of each value left
     if b.won() or not b.canCollapse() or depth == 0:
         return score
@@ -26,8 +26,8 @@ def treeSearch(b, score, depth=1):
         moveScore = score + boardCopy.move(m, add_tile=False)
         #do our move - don't add a tile, so its not stochastic
         moveScore = treeSearch(boardCopy, moveScore, depth - 1)
-        moveScore = moveScore * len(boardCopy.getEmptyCells()) / depth
-        #print "After move %d:%d\n%s" % (m, moveScore, boardCopy)
+        moveScore = moveScore * len(boardCopy.getEmptyCells())# / depth
+        #print "depth %d move %d:%d\n%s" % (depth, m, moveScore, boardCopy)
         bestScore = max(bestScore, moveScore)
     return bestScore
 
@@ -51,7 +51,7 @@ def chooseMove(g):
 
 def start_ai():
     #make a game to use
-    g = Game()
+    g = Game(scores_file='./score.txt')
     #start the ai loop
     try:
         while True:
