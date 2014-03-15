@@ -1,7 +1,6 @@
 # -*- coding: UTF-8 -*-
 from __future__ import print_function
 
-import os
 import os.path
 import math
 
@@ -99,7 +98,7 @@ class Game(object):
             self.best_score = int(f.readline(), 10)
             f.close()
         except:
-            pass # fail silently
+            pass  # fail silently
 
     def saveBestScore(self):
         """
@@ -112,7 +111,7 @@ class Game(object):
             f.write(str(self.best_score))
             f.close()
         except:
-            pass # fail silently
+            pass  # fail silently
 
     def incScore(self, pts):
         """
@@ -145,7 +144,7 @@ class Game(object):
                     os.system(Game.__clear)
                 else:
                     print("\n")
-                print(self.__str__(margins={'left':4, 'top':4, 'bottom':4}))
+                print(self.__str__(margins={'left': 4, 'top': 4, 'bottom': 4}))
                 if self.board.won() or not self.board.canMove():
                     break
                 m = self.readMove()
@@ -167,9 +166,9 @@ class Game(object):
 
         az = {}
         for i in range(1, int(math.log(self.board.goal(), 2))):
-            az[2**i] = chr(i+96)
+            az[2 ** i] = chr(i + 96)
 
-        if c==0 and self.__azmode:
+        if c == 0 and self.__azmode:
             return '.'
         elif c == 0:
             return '  .'
@@ -193,14 +192,14 @@ class Game(object):
         """
         b = self.board
         rg = range(b.size())
-        left = ' '*margins.get('left', 0)
+        left = ' ' * margins.get('left', 0)
         s = '\n'.join(
             [left + ' '.join([self.getCellStr(x, y) for x in rg]) for y in rg])
         return s
 
     def __str__(self, margins={}):
         b = self.boardToString(margins=margins)
-        top = '\n'*margins.get('top', 0)
-        bottom = '\n'*margins.get('bottom', 0)
+        top = '\n' * margins.get('top', 0)
+        bottom = '\n' * margins.get('bottom', 0)
         scores = ' \tScore: %5d  Best: %5d\n' % (self.score, self.best_score)
         return top + b.replace('\n', scores, 1) + bottom

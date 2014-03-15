@@ -17,6 +17,7 @@ from helpers import DevNull
 
 _BSIZE = Board.SIZE
 
+
 class TestGame(unittest.TestCase):
 
     def setUp(self):
@@ -30,6 +31,7 @@ class TestGame(unittest.TestCase):
         # mock os.system
         self.system = os.system
         self.sys_cmd = None
+
         def fake_system(*cmd):
             self.sys_cmd = cmd
 
@@ -78,7 +80,7 @@ class TestGame(unittest.TestCase):
         scores_file = NamedTemporaryFile(delete=False)
         scores_file.close()
 
-        g = Game(scores_file=scores_file.name)
+        Game(scores_file=scores_file.name)
 
         remove(scores_file.name)
 
@@ -98,8 +100,8 @@ class TestGame(unittest.TestCase):
         self.g.score = s
         self.g.best_score = s
         self.g.incScore(i)
-        self.assertEqual(self.g.score, s+i)
-        self.assertEqual(self.g.best_score, s+i)
+        self.assertEqual(self.g.score, s + i)
+        self.assertEqual(self.g.best_score, s + i)
 
     def test_inc_score_update_best_score(self):
         s = 3
@@ -107,8 +109,8 @@ class TestGame(unittest.TestCase):
         self.g.score = s
         self.g.best_score = 0
         self.g.incScore(i)
-        self.assertEqual(self.g.score, s+i)
-        self.assertEqual(self.g.best_score, s+i)
+        self.assertEqual(self.g.score, s + i)
+        self.assertEqual(self.g.best_score, s + i)
 
     def test_inc_score_dont_update_best_score_if_higher(self):
         s = 3
@@ -117,7 +119,7 @@ class TestGame(unittest.TestCase):
         self.g.score = s
         self.g.best_score = bs
         self.g.incScore(i)
-        self.assertEqual(self.g.score, s+i)
+        self.assertEqual(self.g.score, s + i)
         self.assertEqual(self.g.best_score, bs)
 
     # == .end == #

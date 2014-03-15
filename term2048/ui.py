@@ -13,6 +13,7 @@ try:
 except ImportError:
     __has_argparse = False
 
+
 def __print_argparse_warning():
     """print a warning for Python 2.6 users who don't have argparse"""
     print("""WARNING:
@@ -21,10 +22,12 @@ def __print_argparse_warning():
             [sudo] pip install argparse
         I'll continue without processing any option.""")
 
+
 def print_version_and_exit():
     from term2048 import __version__
     print("term2048 v%s" % __version__)
     sys.exit(0)
+
 
 def parse_cli_args():
     """parse args from the CLI and return a dict"""
@@ -35,6 +38,7 @@ def parse_cli_args():
             action='store_true', help='Use the letters a-z instead of numbers')
     parser.add_argument('--version', action='store_true')
     return vars(parser.parse_args())
+
 
 def start_game():
     """start a new game"""
