@@ -154,7 +154,7 @@ class TestBoard(unittest.TestCase):
         self.assertEqual(self.b.getLine(i), l)
 
     # == .setCol == #
-    def test_setLine(self):
+    def test_setCol(self):
         i = 2
         l = [1, 2, 3, 4]
         self.b.setCol(i, l)
