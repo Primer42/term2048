@@ -11,3 +11,10 @@ __pycache__
 htmlcov
 MANIFEST
 .tox
+
+#eclipse stuff
+.project
+.pydevproject
+
+#virtualenv
+VIRTUAL/
