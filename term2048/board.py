@@ -194,8 +194,9 @@ class Board(object):
             [' '.join([str(self.getCell(x, y)) for x in self.__size_range])
                                              for y in self.__size_range])
 
-    def __equals__(self, other):
-        for col in self.__size_range:
-            if self.getCol(col) != other.getCol(col):
-                return False
-        return True
+    def __eq__(self, other):
+        return all([self.getCol(col) == other.getCol(col)
+                    for col in self.__size_range])
+
+    def __ne__(self, other):
+        return not self == other
