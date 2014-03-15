@@ -100,6 +100,7 @@ class TestUI(unittest.TestCase):
         self.assertRegexpMatches(self.output['output'],
                 r'^term2048 v\d+\.\d+\.\d+$')
 
+
 class TestUIPy26(unittest.TestCase):
 
     def setUp(self):
