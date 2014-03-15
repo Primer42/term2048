@@ -1,5 +1,6 @@
 # -*- coding: UTF-8 -*-
 import random
+from collections import Counter
 
 # PY3 compat
 try:
@@ -62,6 +63,19 @@ class Board(object):
         return true if the game is filled
         """
         return len(self.getEmptyCells()) == 0
+
+    def canCollapse(self):
+        """
+        return true if it is possible for two cells to collapse into each other
+        For now, this tests if there are at least two cells of the same value
+        """
+        #count the number of each cell value
+        count = Counter()
+        for col in self.__size_range:
+            count.update(filter(lambda x: x > 0, self.getCol(col)))
+        #get the most common element's count
+        highestElementCount = count.most_common(1)[0][1]
+        return highestElementCount > 1
 
     def addTile(self, value=None, choices=([2] * 9 + [4])):
         """
@@ -174,3 +188,14 @@ class Board(object):
             self.addTile()
 
         return score
+
+    def __str__(self):
+        return '\n'.join(
+            [' '.join([str(self.getCell(x, y)) for x in self.__size_range])
+                                             for y in self.__size_range])
+
+    def __equals__(self, other):
+        for col in self.__size_range:
+            if self.getCol(col) != other.getCol(col):
+                return False
+        return True
