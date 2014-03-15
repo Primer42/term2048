@@ -61,5 +61,6 @@ def start_ai():
                 break
             m = chooseMove(g)
             g.incScore(g.board.move(m))
+        g.saveBestScore()
     except KeyboardInterrupt:
-        return
+        g.saveBestScore()
