@@ -6,8 +6,6 @@ Created on Mar 15, 2014
 from term2048.board import Board
 from term2048.game import Game
 from copy import deepcopy
-import Queue
-import threading
 
 moves = [Board.UP, Board.DOWN, Board.LEFT, Board.RIGHT]
 
@@ -20,9 +18,7 @@ class node():
 
         self.board = _board
         self.parent = _parent
-        children = []
-
-        self.score = 0
+        self.children = []
 
         if not self.board.won() and \
                 self.board.canMove() and \
@@ -37,9 +33,7 @@ class node():
                     child = node(boardCopy, self)
                     nodeLookup[str(boardCopy)] = child
 
-                children.append(child)
-                totMoveScore = (moveScore * (len(self.board.getEmptyCells()) / float(self.board.size() ** 2))) + child.score
-                self.score = max(self.score, totMoveScore)
+                self.children.append((moveScore, child))
 
     def getParents(self):
         if self.parent is None:
@@ -49,46 +43,26 @@ class node():
             parents.append(self.parent)
             return parents
 
+    def getScore(self):
+        #get the best child
+        if not len(self.children):
+            return 0
+        bestChild = sorted(self.children, key=lambda c: c[1].getScore())[-1]
+        return bestChild[0] * len(self.board.getEmptyCells()) / (self.board.size() ** 2)
+
+    def getDepthScore(self, depth=1.0):
+        #get the best child
+        if not len(self.children):
+            return 0
+        depthChildren = [c + (c[1].getDepthScore(depth + 1),) for c in self.children]
+        bestChild = sorted(depthChildren, key=lambda c: c[2])[-1]
+        return (bestChild[0] * len(self.board.getEmptyCells()) / (self.board.size() ** 2) / depth) + bestChild[2]
+
     def __eq__(self, other):
         return self.board == other.board
 
     def __ne__(self, other):
         return not self == other
-
-def treeSearch(b, score, depth=8):
-    #return the score if we've won or if there is only one cell of each value left
-    if b.won() or not b.canCollapse() or depth == 0:
-        return score
-    #return 0 if we've lost
-    if not b.canMove():
-        return 0
-    #recurse
-    #assuming that UP, DOWN, LEFT and RIGHT are the only moves
-    bestScore = float('-inf')
-    for m in moves:
-        #copy the board
-        boardCopy = deepcopy(b)
-
-        #do our move - don't add a tile, so its not stochastic
-        moveScore = score + boardCopy.move(m, add_tile=False)
-
-        #boardCopy.move(m, add_tile=False)
-        #moveScore = max([b.getCell(x, y) for x, y in combinations_with_replacement(range(b.size()), 2)])
-
-        moveScore = treeSearch(boardCopy, moveScore, depth - 1)
-        moveScore = moveScore * len(boardCopy.getEmptyCells())
-        #print "depth %d move %d:%d\n%s" % (depth, m, moveScore, boardCopy)
-        bestScore = max(bestScore, moveScore)
-    return bestScore
-
-
-'''
-def testMove(q, m, b, g,):
-    incScore = b.move(m, add_tile=False)
-    if b == g.board:
-        q.put((m, b, 0))
-    q.put((m, b, treeSearch(b, g.score + incScore)))
-'''
 
 
 def chooseMove(g):
@@ -116,7 +90,8 @@ def chooseMove(g):
         if boardCopy == g.board:
             continue
         n = node(boardCopy, None)
-        moveScore = n.score
+        #moveScore = n.getScore()
+        moveScore = n.getDepthScore()
         print "Score for %d is %f" % (m, moveScore)
         if moveScore > bestScore:
             bestMove = m
