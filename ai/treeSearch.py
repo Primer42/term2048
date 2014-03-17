@@ -6,6 +6,7 @@ Created on Mar 15, 2014
 from term2048.board import Board
 from term2048.game import Game
 from copy import deepcopy
+import random
 
 moves = [Board.UP, Board.DOWN, Board.LEFT, Board.RIGHT]
 
@@ -118,10 +119,11 @@ def chooseMove(g):
         if boardCopy == g.board:
             continue
         n = node(boardCopy, None)
-        #moveScore = n.getScore()
-        moveScore = n.getDepthScore()
+        #moveScore = n.getScore() + incScore
+        #moveScore = n.getDepthScore() + incScore
+        moveScore = n.getEmptyDepthScore() + len(boardCopy.getEmptyCells())
         print "Score for %d is %f" % (m, moveScore)
-        if moveScore > bestScore:
+        if moveScore > bestScore or (moveScore == bestScore and random.randint(0, 1) == 0):
             bestMove = m
             bestScore = moveScore
 
