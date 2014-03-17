@@ -64,6 +64,28 @@ class node():
         bestChild = sorted(depthChildren, key=lambda c: c[2])[-1]
         return (bestChild[0] * len(self.board.getEmptyCells()) / (self.board.size() ** 2) / depth) + bestChild[2]
 
+    def getEmptyScore(self):
+        '''
+        try to keep the most spots empty for as long as possible
+        '''
+        if len(self.children):
+            emptyChildren = [c + (c[1].getEmptyScore(),) for c in self.children]
+            bestChild = sorted(emptyChildren, key=lambda c: c[2])[-1]
+        else:
+            bestChild = (0,) * 3
+        return len(self.board.getEmptyCells()) + bestChild[2]
+
+    def getEmptyDepthScore(self, depth=1):
+        '''
+        try to keep the most cells empty, and decrement score for future moves
+        '''
+        if len(self.children):
+            emptyChildren = [c + (c[1].getEmptyDepthScore(depth + 1),) for c in self.children]
+            bestChild = sorted(emptyChildren, key=lambda c: c[2])[-1]
+        else:
+            bestChild = (0, ) * 3
+        return (len(self.board.getEmptyCells()) / depth) + bestChild[2]
+
     def __eq__(self, other):
         return self.board == other.board
 
