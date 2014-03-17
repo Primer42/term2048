@@ -44,6 +44,9 @@ class node():
             return parents
 
     def getScore(self):
+        '''
+        maximize the score
+        '''
         #get the best child
         if not len(self.children):
             return 0
@@ -51,6 +54,9 @@ class node():
         return bestChild[0] * len(self.board.getEmptyCells()) / (self.board.size() ** 2)
 
     def getDepthScore(self, depth=1.0):
+        '''
+        maximize the score, and decrement moves further in the future.
+        '''
         #get the best child
         if not len(self.children):
             return 0
