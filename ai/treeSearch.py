@@ -102,18 +102,6 @@ def chooseMove(g):
     bestScore = float('-inf')
     #q = Queue.Queue()
     for m in moves:
-        '''
-        boardCopy = deepcopy(g.board)
-        t = threading.Thread(target=testMove, args=(q, m, boardCopy, g))
-        t.daemon = True
-        t.start()
-
-    for _ in moves:
-        m, _, score = q.get()
-        if score > bestScore or bestScore < 0:
-            bestMove = m
-            bestScore = score
-        '''
         boardCopy = deepcopy(g.board)
         incScore = boardCopy.move(m, add_tile=False)
         if boardCopy == g.board:
